@@ -1,0 +1,389 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Alldotz · Four steps animation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..24,300,0..1,0&display=block" rel="stylesheet">
+<style>
+:root{
+  --navy:#0C0143; --yellow:#FEF600; --lightblue:#5DC7FF; --paper:#F9F9F9; --white:#fff; --mist:#EDEDF1;
+  --ink:#0C0143; --ink-muted:rgba(12,1,67,.65); --ink-line:rgba(12,1,67,.2);
+  --text:#F9F9F9; --muted:rgba(249,249,249,.65); --line:rgba(249,249,249,.2); --faint:rgba(249,249,249,.08);
+  --error:#B42318; --error-bg:#FDECEA;
+  --font-body:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-mono:"Geist Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font-body);-webkit-font-smoothing:antialiased}
+.ms{font-family:"Material Symbols Rounded";font-weight:300;font-style:normal;line-height:1;letter-spacing:normal;text-transform:none;white-space:nowrap;direction:ltr;font-feature-settings:"liga";display:inline-block}
+
+/* ---------- section ---------- */
+.section{padding:48px}
+.panel{position:relative;max-width:1344px;margin:0 auto;border-radius:24px;padding:64px;background:linear-gradient(180deg,#5DC7FF 0%,#B8E4FB 55%,#F3F6FA 100%)}
+.dot{position:absolute;width:10px;height:10px;border-radius:2px;background:var(--navy)}
+.dot.tl{left:24px;top:24px}.dot.tr{right:24px;top:24px}.dot.bl{left:24px;bottom:24px}.dot.br{right:24px;bottom:24px}
+.head{display:flex;align-items:flex-end;justify-content:space-between;gap:64px;margin-bottom:40px}
+h2{font:600 42px/1.1 var(--font-body);letter-spacing:-.02em;margin:0;white-space:nowrap}
+.intro{font:500 20px/1.5 var(--font-body);margin:0;max-width:600px;text-align:right;text-wrap:balance}
+.body{position:relative;display:grid;grid-template-columns:420px 1fr;gap:32px;align-items:stretch}
+
+/* steps */
+.steps{display:flex;flex-direction:column;gap:12px}
+.step{all:unset;box-sizing:border-box;position:relative;display:flex;gap:16px;align-items:flex-start;padding:20px 56px 20px 20px;border-radius:16px;background:var(--paper);border:1px solid var(--ink-line);cursor:pointer;overflow:hidden;transition:background .25s,border-color .25s}
+.step:hover{border-color:rgba(12,1,67,.45)}
+.step:focus-visible{outline:2px solid var(--navy);outline-offset:2px}
+.step.act{background:var(--white);border-color:var(--navy)}
+.badge{flex:none;width:32px;height:32px;border-radius:8px;display:grid;place-items:center;font:500 12px/1 var(--font-mono);background:var(--mist);border:1px solid var(--ink-line);color:var(--ink-muted);transition:.25s}
+.badge .ms{font-size:16px}
+.step.act .badge{background:var(--yellow);border-color:var(--yellow);color:var(--ink)}
+.step.done .badge{background:var(--navy);border-color:var(--navy);color:var(--paper)}
+.step .t{display:block;font:500 16px/1.5 var(--font-body);padding-top:4px;color:var(--ink-muted);transition:color .25s}
+.step .s{display:block;font:400 14px/1.5 var(--font-body);color:var(--ink-muted);margin-top:4px}
+.step.act .t{color:var(--ink)}
+.step .bar{position:absolute;left:0;bottom:0;height:2px;width:0;background:var(--navy)}
+.cta{margin-top:auto;display:flex;align-items:center;gap:16px;padding-top:24px}
+.btn{height:48px;padding:0 24px;border-radius:2px;border:0;display:inline-flex;align-items:center;gap:8px;font:600 16px/20px var(--font-body);color:var(--ink);background:var(--yellow);text-decoration:none;cursor:pointer;flex:none}
+.cta p{margin:0;font:400 14px/1.5 var(--font-body);color:var(--ink-muted)}
+.col-l{display:flex;flex-direction:column}
+
+/* window */
+.win{background:var(--navy);border:1px solid rgba(12,1,67,.2);border-radius:16px;display:flex;flex-direction:column;min-height:686px;overflow:hidden;color:var(--text)}
+.bar-w{display:flex;align-items:center;gap:8px;padding:10px 12px 10px 16px;border-bottom:1px solid var(--line);min-height:48px}
+.bar-w i{width:8px;height:8px;border-radius:50%;background:var(--line)}
+.bar-w .nm{font:400 14px/1.2 var(--font-mono);color:var(--muted);margin-left:8px;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.state{white-space:nowrap}
+.state{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:4px 10px;font:400 14px/1.2 var(--font-mono);color:var(--text);transition:.3s}
+.state::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--line);transition:.3s}
+.state.ok::before{background:var(--lightblue)}.state.ok{border-color:rgba(93,199,255,.6)}
+.state.bad::before{background:#F97066}.state.bad{border-color:rgba(249,112,102,.6)}
+.cv{position:relative;flex:1;padding:40px 40px 32px;overflow:hidden}
+
+/* scene atoms (dark canvas) */
+.rv{opacity:0;transform:translateY(8px);transition:opacity .45s,transform .45s}.rv.on{opacity:1;transform:none}
+.row{display:flex;align-items:center}
+.gap8{gap:8px}.gap12{gap:12px}.mt16{margin-top:16px}.mt20{margin-top:20px}.mt24{margin-top:24px}.mt32{margin-top:32px}
+.node{position:relative;display:flex;align-items:center;gap:10px;background:var(--white);color:var(--ink);border-radius:12px;padding:10px 12px 10px 10px;min-width:0;box-shadow:0 0 0 0 transparent;transition:box-shadow .3s,opacity .45s,transform .45s}
+.node .tile{width:32px;height:32px;flex:none;border-radius:8px;background:var(--yellow);display:grid;place-items:center;transition:background .3s}
+.node .tile .ms{font-size:18px;color:var(--ink)}
+.node b{display:block;font:500 14px/1.5 var(--font-body);white-space:nowrap}
+.node i{display:block;font:400 12px/1.2 var(--font-mono);font-style:normal;color:var(--ink-muted);white-space:nowrap}
+.node.ok{box-shadow:0 0 0 2px var(--lightblue)}
+.node.bad{box-shadow:0 0 0 2px #F97066}
+.node.bad .tile{background:#FDECEA}
+.node.sm{padding:8px 10px 8px 8px}.node.sm .tile{width:28px;height:28px}.node.sm .tile .ms{font-size:16px}
+.flag{position:absolute;top:-10px;right:-8px;font:500 11px/1 var(--font-mono);background:#F97066;color:var(--navy);border-radius:999px;padding:4px 8px;opacity:0;transition:.3s;white-space:nowrap}
+.flag.on{opacity:1}.flag.good{background:var(--lightblue)}
+.wire{height:2px;flex:1 1 18px;min-width:14px;background:linear-gradient(90deg,var(--yellow),#fff);transform:scaleX(0);transform-origin:left;transition:transform .5s}
+.wire.on{transform:scaleX(1)}
+.fork{display:flex;align-items:center}
+.fork svg{width:40px;height:116px;flex:none;overflow:visible}
+.fork path{fill:none;stroke:url(#fg);stroke-width:1.5;stroke-dasharray:80;stroke-dashoffset:80;transition:stroke-dashoffset .6s}
+.fork path.on{stroke-dashoffset:0}
+.colnodes{display:flex;flex-direction:column;gap:12px}
+.pill{display:inline-flex;align-items:center;gap:6px;font:500 12px/1.5 var(--font-body);border:1px solid var(--line);color:var(--text);border-radius:999px;padding:4px 12px;white-space:nowrap;transition:.3s}
+.pill .ms{font-size:14px}
+.pill.solid{background:var(--white);color:var(--ink);border-color:var(--white)}
+.pill.hl{background:var(--yellow);color:var(--ink);border-color:var(--yellow)}
+.pill.ok{border-color:rgba(93,199,255,.7);color:var(--lightblue)}
+.pills{display:flex;gap:8px;flex-wrap:wrap}
+.msg{background:rgba(249,249,249,.08);border-radius:12px 12px 0 12px;padding:12px 14px;font:400 14px/1.5 var(--font-body);color:var(--text);min-height:48px;max-width:560px;margin-left:auto}
+.caret::after{content:"";display:inline-block;width:1px;height:14px;background:currentColor;margin-left:1px;vertical-align:-2px;animation:bl 1s steps(1) infinite}
+@keyframes bl{50%{opacity:0}}
+.ybtn{display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 16px;border-radius:2px;background:var(--yellow);color:var(--ink);font:600 14px/1 var(--font-body);transition:transform .15s,opacity .3s;flex:none}
+.ybtn .ms{font-size:18px;font-variation-settings:"FILL" 1}
+.ybtn.pressed{transform:scale(.94)}
+.glass{background:rgba(249,249,249,.06);border:1px solid rgba(249,249,249,.12);border-radius:12px;padding:16px}
+.tabs{display:flex;gap:20px;align-items:center;font:400 12px/1.5 var(--font-body);color:var(--muted);border-bottom:1px solid var(--line);padding-bottom:10px;margin-bottom:14px}
+.tabs .act{color:var(--text);font-weight:500;border-bottom:2px solid var(--yellow);margin-bottom:-12px;padding-bottom:10px}
+.tabs .pill{margin-left:auto}
+.cols2{display:grid;grid-template-columns:1fr 1fr;gap:24px;font:400 13px/1.6 var(--font-mono)}
+.cols2 small{display:block;font:400 12px/1.5 var(--font-body);color:var(--muted);margin-bottom:6px}
+.cols2 span{color:var(--muted)}
+.inp{border:1.5px solid var(--yellow);border-radius:8px;padding:8px 10px;font:400 13px/1.3 var(--font-mono);min-height:36px;background:rgba(249,249,249,.04)}
+.sug{border:1px solid var(--line);border-top:0;padding:6px 10px;font:400 12px/1.4 var(--font-mono)}
+.sug span{color:var(--muted)}
+.ring{width:110px;flex:none;text-align:center;font:400 12px/1.4 var(--font-mono);color:var(--muted)}
+.ring svg{display:block;margin:0 auto 8px}
+.ring .fg{transition:stroke-dashoffset .6s}
+.rules{flex:1;display:flex;flex-direction:column;gap:8px;min-width:0}
+.rule{display:flex;align-items:center;gap:12px;background:rgba(249,249,249,.06);border:1px solid rgba(249,249,249,.12);border-radius:12px;padding:12px 14px;transition:border-color .3s,opacity .45s,transform .45s}
+.rule .ck{width:24px;height:24px;flex:none;border-radius:6px;border:1px solid var(--line);display:grid;place-items:center;color:var(--navy);transition:.3s}
+.rule .ck .ms{font-size:16px;opacity:0;transition:opacity .2s}
+.rule.chk .ck{background:var(--lightblue);border-color:var(--lightblue)}
+.rule.chk .ck .ms{opacity:1}
+.rule.bad{border-color:rgba(249,112,102,.7)}
+.rule.bad .ck{background:#F97066;border-color:#F97066}.rule.bad .ck .ms{opacity:1}
+.rule .rt{display:flex;flex-direction:column;gap:2px;flex:1;min-width:0}
+.rule .rt b{font:500 14px/1.5 var(--font-body)}
+.rule .sg{font:400 12px/1.5 var(--font-body);color:var(--muted)}
+.tag{display:inline-block;font:500 11px/1.5 var(--font-mono);border:1px solid var(--line);border-radius:4px;padding:0 6px;margin-right:6px;vertical-align:1px}
+.bubble{background:rgba(249,249,249,.06);border:1px solid rgba(249,249,249,.12);border-radius:12px;padding:14px 16px;font:400 13px/1.55 var(--font-body)}
+.bubble .who{display:flex;align-items:center;gap:6px;font:500 13px/1.5 var(--font-body);margin-bottom:4px}
+.bubble .who .ms{font-size:16px;color:var(--yellow);font-variation-settings:"FILL" 1}
+.bubble p{margin:0 0 4px;min-height:20px;color:var(--muted)}
+.trace small{display:block;font:400 12px/1.5 var(--font-body);color:var(--muted);margin-bottom:8px}
+.tr{display:grid;grid-template-columns:80px 1fr;gap:12px;align-items:center;font:400 12px/1.4 var(--font-mono);margin-bottom:6px}
+.tb{position:relative;height:12px;border-radius:3px;background:rgba(249,249,249,.08)}
+.tb i{position:absolute;top:0;height:100%;width:0;border-radius:3px;transition:width .6s}
+.tb i.g{background:var(--lightblue)}.tb i.r{background:#F97066}
+
+/* cursor (hand pointer like the Figma Cursor / Pointer component) */
+#cur{position:absolute;left:0;top:0;width:0;height:0;z-index:20;pointer-events:none;opacity:0;transform:translate(600px,320px);transition:transform .8s cubic-bezier(.45,.05,.25,1),opacity .3s}
+#cur.vis{opacity:1}
+#cur svg{position:absolute;left:-1px;top:-1px;display:block;filter:drop-shadow(0 2px 3px rgba(12,1,67,.35));transition:transform .12s}
+#cur.down svg{transform:scale(.88);transform-origin:1px 1px}
+#cur .rip{position:absolute;left:-12px;top:-12px;width:24px;height:24px;border-radius:50%;border:2px solid var(--yellow);opacity:0}
+#cur.click .rip{animation:rip .55s ease-out}
+@keyframes rip{0%{opacity:.8;transform:scale(.4)}100%{opacity:0;transform:scale(1.9)}}
+
+.demo{position:fixed;right:16px;bottom:16px;z-index:30;display:flex;gap:6px;font:500 12px/1 var(--font-body)}
+.demo button{all:unset;cursor:pointer;background:var(--navy);color:var(--paper);border-radius:999px;padding:8px 12px;display:inline-flex;align-items:center;gap:6px}
+.demo button:focus-visible{outline:2px solid var(--lightblue);outline-offset:2px}
+.demo .ms{font-size:16px}
+
+/* ---------- smaller screens ---------- */
+@media (max-width:1100px){
+  .body{grid-template-columns:1fr}
+  .steps{display:grid;grid-template-columns:1fr 1fr}
+  .step .s{display:none}
+  .step{padding:14px 16px;align-items:center}
+  .step .t{padding-top:0}
+  .head{flex-direction:column;align-items:flex-start;gap:16px}
+  .intro{text-align:left}
+  .col-l{display:contents}
+  .steps{order:1}
+  .win{order:2}
+  .cta{order:3;padding-top:0}
+  .win{min-height:560px}
+}
+@media (max-width:640px){
+  .section{padding:16px}
+  .panel{padding:40px 16px 32px;border-radius:16px}
+  .dot.tl,.dot.tr{top:12px}.dot.bl,.dot.br{bottom:12px}.dot.tl,.dot.bl{left:12px}.dot.tr,.dot.br{right:12px}
+  h2{font-size:28px;white-space:normal}
+  .intro{font-size:16px}
+  .head{margin-bottom:24px}
+  .steps{grid-template-columns:1fr 1fr;gap:8px}
+  .step{padding:10px 12px;gap:10px;border-radius:12px}
+  .badge{width:28px;height:28px}
+  .step .t{font-size:14px}
+  .cv{padding:20px 16px;transform-origin:top left}
+  .win{min-height:0}
+  .cta{flex-direction:column;align-items:flex-start;gap:8px}
+  /* flows go vertical */
+  .row.flow{flex-direction:column;align-items:stretch}
+  .row.flow .wire{flex:none;width:2px;height:14px;min-width:0;margin-left:23px;background:linear-gradient(180deg,var(--yellow),#fff);transform:scaleY(0);transform-origin:top}
+  .row.flow .wire.on{transform:scaleY(1)}
+  .fork{flex-direction:column;align-items:stretch}
+  .fork svg{display:none}
+  .fork::before{content:"";display:block;width:2px;height:14px;margin-left:23px;background:linear-gradient(180deg,var(--yellow),#fff)}
+  .colnodes{flex-direction:row;gap:8px}
+  .colnodes .node{flex:1;min-width:0}
+  .node b,.node i{white-space:normal}
+  .rrow{flex-direction:column;align-items:stretch!important;gap:16px!important}
+  .ring{width:auto;display:flex;align-items:center;gap:12px}
+  .ring svg{margin:0;width:56px;height:56px}
+  .golive{padding-left:0!important}
+  .rule{flex-wrap:wrap}
+  .cols2{grid-template-columns:1fr;gap:16px}
+  .tabs{gap:12px;flex-wrap:wrap}
+  .msg{max-width:none}
+}
+@media (prefers-reduced-motion:reduce){#cur{display:none}}
+</style>
+</head>
+<body>
+<section class="section">
+  <div class="panel">
+    <span class="dot tl"></span><span class="dot tr"></span><span class="dot bl"></span><span class="dot br"></span>
+    <div class="body" id="demo">
+      <div class="col-l">
+        <div class="steps" id="steps" role="tablist" aria-label="Four steps"></div>
+      </div>
+      <div class="win" aria-label="Animated demo of Alldotz">
+        <div class="bar-w"><i></i><i></i><i></i><span class="nm" id="nm">deal-to-jira-slack</span><span class="state" id="state">Draft</span></div>
+        <div class="cv" id="cv"></div>
+      </div>
+      <div id="cur" aria-hidden="true"><span class="rip"></span><svg width="20" height="26" viewBox="0 0 20 26"><path d="M1.5 1.5v19.2l5-4.6 3.2 7.6 3.3-1.4-3.2-7.4h6.9z" fill="#0C0143" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg></div>
+    </div>
+  </div>
+</section>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="fg" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FEF600"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs></svg>
+
+<div class="demo" aria-label="Prototype controls">
+  <button type="button" id="pp"><span class="ms" aria-hidden="true" id="ppI">pause</span><span id="ppT">Pause</span></button>
+</div>
+
+<script>
+(function(){
+'use strict';
+var TXT_BUILD='When a deal closes in Salesforce, create a Jira ticket and tell #sales on Slack';
+var STILL=parseInt(new URLSearchParams(location.search).get('still')||'0',10); /* ?still=1..4 shows the end state of one step */
+var REDUCED=!!STILL||(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+var $=function(s){return document.querySelector(s)};
+var demo=$('#demo'),cv=$('#cv'),cur=$('#cur'),stateEl=$('#state'),stepsEl=$('#steps'),pp=$('#pp');
+var timers=[],idx=-1,paused=false;
+function at(ms,fn){if(REDUCED){fn();return}timers.push(setTimeout(fn,ms))} /* reduced/still: apply every step at once, in order */
+function clearAll(){timers.forEach(clearTimeout);timers=[]}
+function q(s){return cv.querySelector(s)}
+function qa(s){return cv.querySelectorAll(s)}
+function A(n){return '[data-a="'+n+'"]'}
+function on(n,ms){at(ms,function(){qa(A(n)).forEach(function(e){e.classList.add('on')})})}
+function cls(n,c,ms,rm){at(ms,function(){qa(A(n)).forEach(function(e){e.classList[rm?'remove':'add'](c)})})}
+function setState(t,c,ms){at(ms||0,function(){stateEl.textContent=t;stateEl.className='state'+(c?' '+c:'')})}
+function typeInto(sel,text,start,per){
+  for(var i=0;i<text.length;i++){(function(k){at(start+k*per,function(){var e=q(sel);if(e)e.textContent=text.slice(0,k+1)})})(i)}
+  at(start+text.length*per+60,function(){var e=q(sel);if(e)e.classList.remove('caret')});
+}
+function moveTo(el){
+  if(REDUCED||!el)return;
+  var d=demo.getBoundingClientRect(),r=el.getBoundingClientRect();
+  var x=r.left-d.left+Math.min(r.width/2,64), y=r.top-d.top+r.height/2;
+  cur.classList.add('vis');
+  cur.style.transform='translate('+x+'px,'+y+'px)';
+}
+function ripple(){cur.classList.remove('click','down');void cur.offsetWidth;cur.classList.add('click','down');setTimeout(function(){cur.classList.remove('down')},160)}
+function press(sel,tMove,after){
+  at(tMove,function(){moveTo(q(sel))});
+  at(tMove+950,function(){ripple();var e=q(sel);if(e)e.classList.add('pressed');if(after)after();
+    var e2=q(sel);if(e2)setTimeout(function(){e2.classList.remove('pressed')},180)});
+}
+function node(n,icon,t,s,extra,id){return '<div class="node rv'+(extra||'')+'" data-a="'+n+'"'+(id?' id="'+id+'"':'')+'><span class="tile"><span class="ms">'+icon+'</span></span><span><b>'+t+'</b>'+(s?'<i>'+s+'</i>':'')+'</span></div>'}
+function wire(n,pre){return '<div class="wire'+(pre?' on':'')+'" data-a="'+n+'"></div>'}
+
+var STEPS=[
+{tab:'Build',title:'Say it, it is built',text:'Describe the integration in plain words. AI builds it, maps the fields and reviews it.',dur:9500,name:'deal-to-jira-slack',
+ html:function(){return ''
+  +'<div class="msg"><span id="t1" class="caret"></span></div>'
+  +'<div class="row flow mt32">'+node(1,'cloud','Salesforce','Deal closed',' sm')+wire(2)+node(3,'swap_horiz','Field Mapper','fields matched',' sm')+wire(4)
+  +node(5,'call_split','Multicast','both at once',' sm')
+  +'<div class="fork"><svg viewBox="0 0 40 116" aria-hidden="true"><path data-a="6" d="M0 58 C20 58 20 22 40 22"/><path data-a="6" d="M0 58 C20 58 20 94 40 94"/></svg>'
+  +'<div class="colnodes">'+node(7,'confirmation_number','Jira','Create ticket',' sm')+node(8,'tag','Slack','Post to #sales',' sm')+'</div></div></div>'
+  +'<div class="pills mt32"><span class="pill rv" data-a="9"><span class="ms">auto_awesome</span>AI flow builder</span><span class="pill rv" data-a="10">Fields mapped by AI</span><span class="pill ok rv" data-a="11"><span class="ms">check</span>Reviewed with AI</span></div>'},
+ play:function(){
+  setState('Draft','',0);
+  typeInto('#t1',TXT_BUILD,300,25);
+  on(1,2700);on(2,3000);on(3,3200);on(4,3500);on(5,3700);
+  at(4000,function(){qa(A(6)).forEach(function(p){p.classList.add('on')})});
+  on(7,4200);on(8,4400);on(9,5000);on(10,5700);on(11,6400);
+  setState('Draft · reviewed','ok',6400);
+ }},
+{tab:'Test',title:'Test, and the schemas find themselves',text:'Run the flow with mock data or read-only against real systems. The shape of each step’s output is learned from the run, saved with the flow and offered as you map the next step.',dur:10800,name:'deal-to-jira-slack',
+ html:function(){return ''
+  +'<div class="row" style="justify-content:space-between;gap:12px;flex-wrap:wrap"><div class="pills"><span class="pill solid">Simulate: mock data, no real calls</span><span class="pill">Dry run: real, read-only</span></div><span class="ybtn" id="run"><span class="ms">play_arrow</span>Dry run</span></div>'
+  +'<div class="row flow mt32">'+node(1,'shopping_cart','Order in','',' sm on')+wire(0,1)+node(2,'swap_horiz','Mapper','',' sm on')+wire(0,1)+node(3,'confirmation_number','Jira call','',' sm on')+wire(0,1)+node(4,'tag','Slack','',' sm on')+'</div>'
+  +'<div class="glass mt32 rv" data-a="9"><div class="tabs"><span>Properties</span><span>Payload</span><span class="act">Schema</span><span class="pill ok rv" data-a="12"><span class="ms">check</span>Saved with the flow</span></div>'
+  +'<div class="cols2"><div><small>What Mapper passes on</small>customer <span>[object]</span><br>&nbsp;&nbsp;name <span>[string]</span><br>&nbsp;&nbsp;country <span>[string]</span><br>&nbsp;&nbsp;amount <span>[number]</span></div>'
+  +'<div><small>Next step: Jira call, field to fill</small><div class="inp"><span id="t4" class="caret"></span></div>'
+  +'<div class="sug rv" data-a="10">customer.name <span>[string]</span></div><div class="sug rv" data-a="11">customer.country <span>[string]</span></div></div></div></div>'},
+ play:function(){
+  setState('Simulate','',0);
+  press('#run',500,function(){setState('Running','',0)});
+  cls(1,'ok',1700);cls(2,'ok',2250);cls(3,'ok',2800);cls(4,'ok',3350);
+  setState('Passed','ok',3500);
+  on(9,4000);
+  typeInto('#t4','$.cus',4700,180);
+  on(10,5800);on(11,6050);
+  on(12,7300);
+ }},
+{tab:'Govern',title:'Rules checked before go-live',text:'Policies run on every flow. Findings come with a suggested fix, and an exception needs an approved, recorded waiver.',dur:10600,name:'deal-to-jira-slack',
+ html:function(){return ''
+  +'<div class="row rrow" style="align-items:flex-start;gap:28px"><div class="ring"><svg width="92" height="92" viewBox="0 0 84 84"><circle cx="42" cy="42" r="34" fill="none" stroke="rgba(249,249,249,.12)" stroke-width="7"/>'
+  +'<circle class="fg" id="rg" cx="42" cy="42" r="34" fill="none" stroke="#FEF600" stroke-width="7" stroke-linecap="round" stroke-dasharray="213.6" stroke-dashoffset="213.6" transform="rotate(-90 42 42)"/></svg><span id="rt">0 of 4 checks</span></div>'
+  +'<div class="rules">'
+  +'<div class="rule rv" data-a="1"><span class="ck"><span class="ms">check</span></span><span class="rt"><b>Every flow has error handling</b></span></div>'
+  +'<div class="rule rv" data-a="2"><span class="ck"><span class="ms">check</span></span><span class="rt"><b>Every flow has a retry policy</b></span></div>'
+  +'<div class="rule rv" data-a="3"><span class="ck"><span class="ms" id="c3">check</span></span><span class="rt"><b>Naming convention</b><span class="sg" id="s3">Step “Mapper” does not follow it. Suggested fix: “Map deal to ticket”</span></span><span class="ybtn" id="fx3">Apply</span></div>'
+  +'<div class="rule rv" data-a="4"><span class="ck"><span class="ms" id="c4">check</span></span><span class="rt"><b><span class="tag">AI · Performance</span>Send only what is needed</b><span class="sg" id="s4">Mapper passes the whole customer record on. Suggested fix: send only the fields Jira needs.</span></span><span class="ybtn" id="fx4">Apply</span></div></div></div>'
+  +'<div class="mt24 golive" style="padding-left:138px"><span class="ybtn rv" id="gl" data-a="9"><span class="ms">rocket_launch</span>Ready to go live</span></div>'},
+ play:function(){
+  setState('Checking','',0);
+  function ring(n,ms){at(ms,function(){var c=q('#rg'),t=q('#rt');if(c)c.style.strokeDashoffset=String(213.6*(1-n/4));if(t)t.textContent=n+' of 4 checks'})}
+  function fix(i,txt){var r=q(A(i)),c=q('#c'+i),sg=q('#s'+i),b=q('#fx'+i);if(r){r.classList.remove('bad');r.classList.add('chk')}if(c)c.textContent='check';if(sg)sg.textContent=txt;if(b)b.style.display='none'}
+  function flag(i){var r=q(A(i)),c=q('#c'+i);if(r)r.classList.add('bad');if(c)c.textContent='priority_high'}
+  on(1,300);on(2,700);on(3,1100);on(4,1500);
+  cls(1,'chk',900);ring(1,900);cls(2,'chk',1300);ring(2,1300);
+  at(2000,function(){flag(3)});at(2600,function(){flag(4)});
+  setState('2 findings','bad',2600);
+  press('#fx3',3400,function(){fix(3,'Renamed to “Map deal to ticket”');ring(3,0)});
+  press('#fx4',5400,function(){fix(4,'Mapper now sends only the fields Jira needs.');ring(4,0);setState('All checks pass','ok',0)});
+  on(9,7600);
+  press('#gl',8200,function(){setState('Live','ok',0)});
+ }},
+{tab:'Self-healing',title:'Watch it run, see it heal',text:'Live traces show every step. A failed call retries by itself, and when it needs you, AI says what happened and proposes a fix.',dur:12800,name:'deal-to-jira-slack',
+ html:function(){return ''
+  +'<div class="row flow">'+node(1,'shopping_cart','Order in','',' sm')+wire(11)+node(2,'swap_horiz','Mapper','',' sm')+wire(12)
+  +'<div class="node sm rv" data-a="3" id="hn"><span class="flag" id="hb">503</span><span class="tile"><span class="ms">confirmation_number</span></span><span><b>Jira call</b></span></div>'+wire(13)+node(4,'tag','Slack','',' sm')+'</div>'
+  +'<div class="bubble mt24 rv" data-a="5"><div class="who"><span class="ms">auto_awesome</span>AI</div><p id="l1"></p><p id="l2"></p><span class="ybtn rv" id="ap" data-a="6" style="margin-top:8px">Apply: retry 3 times</span></div>'
+  +'<div class="glass trace mt16 rv" data-a="7"><small>Live trace</small>'
+  +'<div class="tr"><span>Order in</span><span class="tb"><i class="g" data-w="9%" style="left:0"></i></span></div>'
+  +'<div class="tr"><span>Mapper</span><span class="tb"><i class="g" data-w="9%" style="left:9%"></i></span></div>'
+  +'<div class="tr"><span>Jira call</span><span class="tb"><i class="r" data-w="11%" style="left:18%"></i><i class="r" data-w="11%" style="left:32%"></i><i class="r" data-w="11%" style="left:46%"></i><i class="g" data-w="12%" style="left:60%"></i></span></div>'
+  +'<div class="tr"><span>Slack</span><span class="tb"><i class="g" data-w="12%" style="left:76%"></i></span></div></div>'
+  +'<div class="pills mt16"><span class="pill ok rv" data-a="8"><span class="ms">check</span>Retried 2 times, then succeeded</span><span class="pill rv" data-a="9">No one had to step in</span></div>'},
+ play:function(){
+  function grow(n,ms){at(ms,function(){var e=qa('.tb i')[n];if(e)e.style.width=e.getAttribute('data-w')})}
+  function jb(t,c,ms){at(ms,function(){var b=q('#hb');if(!b)return;b.textContent=t;b.className='flag on'+(c?' '+c:'')})}
+  function jn(c,rm,ms){at(ms,function(){var j=q('#hn');if(j)j.classList[rm?'remove':'add'](c)})}
+  var L1='Jira answered 503, so it was briefly unavailable. Nothing is wrong in your flow.',L2='Suggested fix: retry this step 3 times, 5 seconds apart.';
+  setState('Running','',0);
+  on(1,300);on(11,450);on(2,600);on(12,750);on(3,900);on(13,1050);on(4,1200);on(7,1400);
+  cls(1,'ok',1600);grow(0,1600);cls(2,'ok',2100);grow(1,2100);
+  jn('bad',false,2800);grow(2,2800);jb('503','',2800);setState('Failed','bad',2800);
+  on(5,3500);typeInto('#l1',L1,3700,18);typeInto('#l2',L2,3700+L1.length*18+200,18);
+  var tEnd=3700+(L1.length+L2.length)*18+400;
+  on(6,tEnd);
+  press('#ap',tEnd+400,function(){jn('bad',true,0);jn('ok',false,0);jb('retry ×3','good',0);setState('Fix applied','ok',0)});
+  jn('ok',true,8200);jn('bad',false,8200);jb('retry 1/3','',8200);grow(3,8200);setState('Retrying by itself','bad',8200);
+  jb('retry 2/3','',9100);grow(4,9100);
+  jn('bad',true,10000);jn('ok',false,10000);jb('healed','good',10000);grow(5,10000);setState('Healed','ok',10000);
+  cls(4,'ok',10400);grow(6,10400);
+  on(8,11000);on(9,11600);
+ }}
+];
+
+STEPS.forEach(function(s,i){
+  var d=document.createElement('button');
+  d.type='button';d.className='step';d.setAttribute('role','tab');
+  d.innerHTML='<span class="badge">'+(i+1)+'</span><span><span class="t">'+s.title+'</span><span class="s">'+s.text+'</span></span><span class="bar"></span>';
+  d.addEventListener('click',function(){jump(i)});
+  stepsEl.appendChild(d);
+});
+var stepEls=stepsEl.children;
+function activate(i){
+  idx=i;
+  for(var k=0;k<stepEls.length;k++){
+    var e=stepEls[k];e.classList.remove('act','done');e.setAttribute('aria-selected','false');
+    e.querySelector('.badge').innerHTML=k<i?'<span class="ms">check</span>':String(k+1);
+    if(k<i)e.classList.add('done');
+    var b=e.querySelector('.bar');b.style.transition='none';b.style.width='0';
+  }
+  var el=stepEls[i];el.classList.add('act');el.setAttribute('aria-selected','true');
+  var bar=el.querySelector('.bar');
+  if(!paused&&!REDUCED){void bar.offsetWidth;bar.style.transition='width '+STEPS[i].dur+'ms linear';bar.style.width='100%'}
+  else{bar.style.width='100%'}
+  var s=STEPS[i];
+  $('#nm').textContent=s.name;
+  cv.innerHTML=s.html();
+  s.play();
+  if(!paused&&!REDUCED){at(s.dur,function(){go((i+1)%STEPS.length)})}
+}
+function go(i){clearAll();moveTo(stepEls[i]);at(900,function(){ripple();activate(i)})}
+function jump(i){clearAll();cur.classList.remove('vis');activate(i)}
+function setPP(){$('#ppI').textContent=paused?'play_arrow':'pause';$('#ppT').textContent=paused?'Play':'Pause'}
+pp.addEventListener('click',function(){
+  paused=!paused;setPP();
+  if(paused){clearAll();cur.classList.remove('vis');var b=stepEls[idx]&&stepEls[idx].querySelector('.bar');if(b){b.style.transition='none';b.style.width='100%'}}
+  else{go(idx<0?0:(idx+1)%STEPS.length)}
+});
+(document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve()).then(function(){
+  if(REDUCED){paused=true;pp.style.display='none';jump(STILL?STILL-1:0)}else{activate(0)}
+});
+})();
+</script>
+</body>
+</html>
